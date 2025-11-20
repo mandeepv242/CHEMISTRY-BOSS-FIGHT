@@ -384,70 +384,72 @@ const App: React.FC = () => {
       
       <ParticleSystem trigger={particleTrigger} type={particleType} x={clickCoords.x} y={clickCoords.y} />
 
-      {/* Top Bar */}
-      <div className="bg-slate-900/80 p-4 flex justify-between items-center border-b border-slate-700 z-20 backdrop-blur-sm">
+      {/* Top Bar - Fixed Height */}
+      <div className="h-14 bg-slate-900/80 px-4 flex justify-between items-center border-b border-slate-700 z-20 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-yellow-400 font-mono text-xl">
-            <Trophy size={20} /> {gameState.score}
+          <div className="flex items-center gap-2 text-yellow-400 font-mono text-lg md:text-xl">
+            <Trophy size={18} /> {gameState.score}
           </div>
-          <div className="flex items-center gap-2 text-orange-400 font-mono text-xl ml-4">
-            <Flame size={20} /> STREAK x{gameState.streak}
+          <div className="flex items-center gap-2 text-orange-400 font-mono text-lg md:text-xl ml-2 md:ml-4">
+            <Flame size={18} /> x{gameState.streak}
           </div>
         </div>
         <div className="font-mono text-slate-400 text-sm">
-          LEVEL {gameState.currentLevelIndex + 1}/{LEVELS.length}
+          LVL {gameState.currentLevelIndex + 1}/{LEVELS.length}
         </div>
       </div>
 
-      {/* Battle Arena */}
-      <div className="flex-1 relative flex flex-col items-center justify-center p-4 gap-8">
+      {/* Battle Area - Flex Container */}
+      <div className="flex-1 relative flex flex-col p-2 md:p-4 gap-2 md:gap-4 overflow-hidden">
         
-        {/* Health Bars */}
-        <div className="w-full max-w-4xl flex justify-between gap-4 z-20">
+        {/* Health Bars - Fixed Height */}
+        <div className="w-full max-w-4xl mx-auto flex justify-between gap-4 z-20 shrink-0">
           <HealthBar current={gameState.playerHp} max={gameState.maxPlayerHp} label="YOU" color="text-cyan-400" />
           <HealthBar current={gameState.bossHp} max={currentBoss.maxHp} label={currentBoss.name} color={currentBoss.color} isRightAligned />
         </div>
 
-        {/* Visual Scene */}
-        <BattleScene 
-            boss={currentBoss} 
-            isHit={bossIsHit} 
-            isAttacking={bossIsAttacking}
-            isPlayerHit={playerDmgOverlay}
-        />
+        {/* Visual Scene - Flexible Height */}
+        <div className="flex-1 min-h-0 flex items-center justify-center w-full z-10">
+             <BattleScene 
+                boss={currentBoss} 
+                isHit={bossIsHit} 
+                isAttacking={bossIsAttacking}
+                isPlayerHit={playerDmgOverlay}
+            />
+        </div>
 
-        {/* Timer Bar */}
-        <div className="w-full max-w-2xl h-2 bg-slate-800 rounded-full overflow-hidden z-20">
+        {/* Timer Bar - Fixed Height */}
+        <div className="w-full max-w-2xl mx-auto h-1.5 bg-slate-800 rounded-full overflow-hidden z-20 shrink-0">
             <div 
                 className={`h-full transition-all duration-1000 ease-linear ${timeLeft < 5 ? 'bg-red-500' : 'bg-yellow-400'}`}
                 style={{ width: `${(timeLeft / currentBoss.timeLimit) * 100}%` }}
             />
         </div>
 
-        {/* Question Area */}
-        <div className="w-full max-w-3xl z-20">
+        {/* Question Area - Flexible Height */}
+        <div className="w-full max-w-3xl mx-auto z-20 shrink-0 mb-2">
            {currentQuestion && (
-             <div className="animate-in slide-in-from-bottom-10 fade-in duration-300">
-               <div className="bg-slate-800/90 p-6 rounded-t-xl border-2 border-slate-600 text-center shadow-lg relative">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-600 px-4 py-1 rounded-full text-slate-300 flex items-center gap-2">
-                    <Timer size={16} /> {timeLeft}s
+             <div className="animate-in slide-in-from-bottom-10 fade-in duration-300 flex flex-col h-full justify-end">
+               <div className="bg-slate-800/90 p-3 md:p-5 rounded-t-xl border-2 border-slate-600 text-center shadow-lg relative">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-600 px-3 py-0.5 rounded-full text-slate-300 flex items-center gap-1 text-xs md:text-sm">
+                    <Timer size={12} /> {timeLeft}s
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                  <h3 className="text-lg md:text-2xl font-bold text-white leading-tight">
                     {currentQuestion.text}
                   </h3>
                </div>
                
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-900/50 p-4 rounded-b-xl border-x-2 border-b-2 border-slate-600 backdrop-blur-sm">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-900/50 p-2 md:p-3 rounded-b-xl border-x-2 border-b-2 border-slate-600 backdrop-blur-sm">
                  {currentQuestion.options.map((opt, idx) => (
                    <button
                      key={idx}
                      onClick={(e) => handleAnswer(idx, e)}
-                     className="p-4 text-lg font-semibold text-left bg-slate-700/50 hover:bg-cyan-600/80 border border-slate-600 hover:border-cyan-400 rounded transition-all active:scale-95 flex items-center gap-3 group"
+                     className="p-3 text-sm md:text-lg font-semibold text-left bg-slate-700/50 hover:bg-cyan-600/80 border border-slate-600 hover:border-cyan-400 rounded transition-all active:scale-95 flex items-center gap-2 group"
                    >
-                     <span className="w-8 h-8 flex items-center justify-center bg-slate-800 rounded-full text-slate-400 group-hover:text-white group-hover:bg-cyan-500 transition-colors text-sm">
+                     <span className="w-6 h-6 flex items-center justify-center bg-slate-800 rounded-full text-slate-400 group-hover:text-white group-hover:bg-cyan-500 transition-colors text-xs shrink-0">
                        {String.fromCharCode(65 + idx)}
                      </span>
-                     {opt}
+                     <span className="truncate">{opt}</span>
                    </button>
                  ))}
                </div>
